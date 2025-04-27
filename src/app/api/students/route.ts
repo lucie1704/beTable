@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import Airtable from 'airtable';
-import { table } from 'console';
 
 const apiKey = process.env.AIRTABLE_API_KEY!;
 const baseId = process.env.AIRTABLE_BASE_ID!;

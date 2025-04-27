@@ -12,11 +12,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  return NextResponse.redirect(new URL("/login", req.url));
+  return NextResponse.redirect(new URL("/", req.url));
 }
 
 export const config = {
   matcher: [
+    '/admin',
     '/admin/:path',
     '/_next/data/:path/admin/:subpath*'
   ]

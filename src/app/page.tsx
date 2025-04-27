@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Project } from '@/types/project';
 import LikeButton from '@/components/LikeButton';
+import LogoutButton from '@/components/LogoutButton';
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -113,6 +114,7 @@ export default function Home() {
           ))
         )}
       </div>
+      <LogoutButton />
     </main>
   );
 }
