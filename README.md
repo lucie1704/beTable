@@ -1,14 +1,14 @@
 # beTable
 
-Lien d'invitation sur la DB Airtable 
+Lien d'invitation sur la DB Airtable   
 
 https://airtable.com/invite/l?inviteId=invT6Nqs9J2cVE2fE&inviteToken=828c85e706f0c80c324a0469c8fd2791eb0b13c97f0147574391d101339300ca&utm_medium=email&utm_source=product_team&utm_content=transactional-alerts
 
 ## Membres
 
-Erwann Jouvet
-Bilel Saigh
-Lucie Godard
+Erwann Jouvet  
+Bilel Saigh  
+Lucie Godard  
 
 ## Instructions pour installer et lancer le projet
 
