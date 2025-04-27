@@ -34,3 +34,5 @@ JWT_SECRET=
 NEXTAUTH_SECRET=
 NEXTAUTH_URL=http://localhost:3000
 ```
+
+PS: mot de passe du compte admin@admin.com : b3CoolB3Table
