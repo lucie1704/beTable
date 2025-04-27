@@ -7,18 +7,29 @@ const tableName = process.env.AIRTABLE_TABLE_NAME!;
 
 const base = new Airtable({ apiKey }).base(baseId);
 
-export async function GET() {
-  try {
-    const records = await base(tableName)
-    .select({ view: 'Grid view' })
-    .firstPage();
 
-    const portfolios = records.map(record => ({
+export async function GET(req: Request) {
+  const url = new URL(req.url); 
+  const search = url.searchParams.get('search');
+  
+  try {
+    const filterFormula = search 
+    ? `OR(SEARCH("${search}", LOWER({Nom})), SEARCH("${search}", LOWER({Description})))`
+    : '';
+
+    const records = await base(tableName)
+      .select({
+        view: 'Grid view',
+        filterByFormula: filterFormula, 
+      })
+      .firstPage();
+
+    const projects = records.map(record => ({
       id: record.id,
       ...record.fields,
     }));
 
-    return NextResponse.json(portfolios);
+    return NextResponse.json(projects);
   } catch (error) {
     console.error('Erreur Airtable:', error);
     return NextResponse.error();
@@ -42,17 +53,17 @@ export async function POST(req: Request) {
       },
     ]);
 
-    const portfolio = {
+    const project = {
       id: createdRecord[0].id,
       ...createdRecord[0].fields,
     };
 
     return NextResponse.json(
-      { message: 'Portfolio ajouté avec succès', portfolio },
+      { message: 'Projet ajouté avec succès', project },
       { status: 201 }
     );
   } catch (error) {
     console.error('Erreur Airtable POST:', error);
-    return NextResponse.json({ message: 'Erreur lors de l\'ajout du portfolio.' }, { status: 500 });
+    return NextResponse.json({ message: 'Erreur lors de l\'ajout du projet.' }, { status: 500 });
   }
 }

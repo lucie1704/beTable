@@ -25,7 +25,7 @@ const AdminPage = () => {
     };
 
     try {
-      const response = await axios.post('/api/portfolios', newProject, {
+      const response = await axios.post('/api/projects', newProject, {
         headers: {
           'Content-Type': 'application/json',
         },
