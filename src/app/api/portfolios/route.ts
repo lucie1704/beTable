@@ -24,3 +24,35 @@ export async function GET() {
     return NextResponse.error();
   }
 }
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { name, description, technologies, link, image } = body;
+
+    const createdRecord = await base(tableName).create([
+      {
+        fields: {
+          Nom: name,
+          Description: description,
+          Technologies: technologies,
+          Lien: link,
+          Photo: image ? [ image ] : [],
+        },
+      },
+    ]);
+
+    const portfolio = {
+      id: createdRecord[0].id,
+      ...createdRecord[0].fields,
+    };
+
+    return NextResponse.json(
+      { message: 'Portfolio ajouté avec succès', portfolio },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error('Erreur Airtable POST:', error);
+    return NextResponse.json({ message: 'Erreur lors de l\'ajout du portfolio.' }, { status: 500 });
+  }
+}

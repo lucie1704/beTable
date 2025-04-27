@@ -3,44 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Image from 'next/image';
-
-type Portfolio = {
-  id: string;
-  Nom: string;
-  Description: string;
-  Technologies: string[];
-  Lien: string;
-  Photo: {
-    id: string;
-    url: string;
-    filename: string;
-    size: number;
-    type: string;
-    thumbnails: {
-      small: {
-        url: string;
-        width: number;
-        height: number;
-      };
-      large: {
-        url: string;
-        width: number;
-        height: number;
-      };
-      full: {
-        url: string;
-        width: number;
-        height: number;
-      };
-    };
-  }[];
-  Étudiants: string[];
-  Catégories: string[];
-  Publié: boolean;
-  'J\'aime': number;
-  Commentaire: string[];
-};
-
+import { Portfolio } from '@/types/portfolio';
 
 export default function Home() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
@@ -62,7 +25,7 @@ export default function Home() {
         {portfolios.map((portfolio) => (
           <div key={portfolio.id} style={{ border: '1px solid #ccc', borderRadius: '10px', overflow: 'hidden' }}>
             <Image
-              src={portfolio.Photo[0].url} 
+              src={portfolio.Photo && portfolio.Photo.length > 0 ? portfolio.Photo[0].url : '/default-background.png'} 
               alt={portfolio.Nom} 
               width={300} 
               height={200} 
@@ -71,9 +34,13 @@ export default function Home() {
             <div style={{ padding: '15px' }}>
               <h2>{portfolio.Nom}</h2>
               <p>{portfolio.Description}</p>
-              <p><strong>Technologies:</strong> {portfolio.Technologies.join(', ')}</p>
+              <p><strong>Technologies:</strong>
+              {portfolio.Technologies && portfolio.Technologies.length > 0 
+                ? portfolio.Technologies.join(', ') 
+                : 'No technologies listed'}
+              </p>
               <a href={portfolio.Lien} target="_blank" rel="noopener noreferrer">Voir le projet</a>
-              <p><strong>J'aime:</strong> {portfolio["J'aime"]}</p>
+              <p><strong>J&apos;aime:</strong> {portfolio["J'aime"]}</p>
             </div>
           </div>
         ))}
