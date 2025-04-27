@@ -31,6 +31,6 @@ export type Project = {
   Étudiants: string[];
   Catégories: string[];
   Publié: boolean;
-  'J\'aime': number;
+  Likes: number;
   Commentaire: string[];
 };
