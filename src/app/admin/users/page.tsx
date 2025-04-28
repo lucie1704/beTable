@@ -6,13 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: string;  // Exemple : "Admin", "User", etc.
-}
+import { User } from '@/types/user';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -67,9 +61,9 @@ export default function AdminUsersPage() {
 
   const handleEdit = (user: User) => {
     setSelectedUser(user);
-    setName(user.name);
-    setEmail(user.email);
-    setRole(user.role);
+    setName(user.Nom);
+    setEmail(user.Email);
+    setRole(user.Rôle);
     setIsOpen(true);
   };
 

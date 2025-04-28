@@ -78,8 +78,8 @@ export default function Home() {
                       : 'No technologies listed'}
                   </p>
                   {project.Lien && (
-                    <a 
-                      href={project.Lien} 
+                    <Link 
+                      href={project.Lien}
                       target="_blank" 
                       rel="noopener noreferrer"
                       onClick={(e) => e.stopPropagation()}
@@ -91,7 +91,7 @@ export default function Home() {
                       }}
                     >
                       Voir le projet en ligne
-                    </a>
+                    </Link>
                   )}
                 </div>
               </Link>
