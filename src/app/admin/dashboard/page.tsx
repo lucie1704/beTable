@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Project } from '@/types/project';
+import Image from 'next/image';
 
 export default function AdminDashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -17,6 +20,7 @@ export default function AdminDashboardPage() {
   const [image, setImage] = useState('');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     fetchProjects();
@@ -24,10 +28,13 @@ export default function AdminDashboardPage() {
 
   const fetchProjects = async () => {
     try {
+      setIsLoading(true);
       const response = await axios.get('/api/projects');
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -42,6 +49,7 @@ export default function AdminDashboardPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const projectData = {
       name,
@@ -62,6 +70,8 @@ export default function AdminDashboardPage() {
       setIsOpen(false);
     } catch (error) {
       console.error('Error saving project:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,112 +79,185 @@ export default function AdminDashboardPage() {
     setSelectedProject(project);
     setName(project.Nom);
     setDescription(project.Description);
-    setTechnologies(project.Technologies.join(', '));
-    setLink(project.Lien);
-    setImage(project.Photo[0].url);
+    setTechnologies(project.Technologies ? project.Technologies.join(', ') : '');
+    setLink(project.Lien || '');
+    setImage(project.Photo && project.Photo.length > 0 ? project.Photo[0].url : '');
     setIsOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this project?')) {
-      try {
-        await axios.delete(`/api/projects/${id}`);
-        fetchProjects();
-      } catch (error) {
-        console.error('Error deleting project:', error);
-      }
-    }
+  const openAddProjectDialog = () => {
+    resetForm();
+    setIsOpen(true);
   };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Admin - Portfolio Management</h1>
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <h1 className="text-2xl font-bold">Admin - Gestion du Portfolio</h1>
+        <Dialog open={isOpen} onOpenChange={(open) => {
+          if (!open) resetForm();
+          setIsOpen(open);
+        }}>
           <DialogTrigger asChild>
-            <Button onClick={resetForm}>Ajouter un projet</Button>
+            <Button onClick={openAddProjectDialog}>Ajouter un projet</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
               <DialogTitle>{selectedProject ? 'Modifier un projet' : 'Ajouter un projet'}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <Input
-                placeholder="Nom du projet"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-              <Input
-                placeholder="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-              <Input
-                placeholder="Technologies (séparées par des virgules)"
-                value={technologies}
-                onChange={(e) => setTechnologies(e.target.value)}
-              />
-              <Input
-                placeholder="Lien du projet"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-              />
-              <Input
-                placeholder="URL de l'image"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-              />
-              <Button type="submit" className="w-full">
-                {selectedProject ? 'Mettre à jour' : 'Ajouter'}
-              </Button>
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-sm font-medium">Nom du projet</label>
+                <Input
+                  id="name"
+                  placeholder="Nom du projet"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="description" className="text-sm font-medium">Description</label>
+                <Textarea
+                  id="description"
+                  placeholder="Description détaillée du projet"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                  rows={4}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="technologies" className="text-sm font-medium">Technologies</label>
+                <Input
+                  id="technologies"
+                  placeholder="Technologies (séparées par des virgules)"
+                  value={technologies}
+                  onChange={(e) => setTechnologies(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="link" className="text-sm font-medium">Lien du projet</label>
+                <Input
+                  id="link"
+                  placeholder="https://..."
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="image" className="text-sm font-medium">URL de l&apos;image</label>
+                <Input
+                  id="image"
+                  placeholder="URL de l'image"
+                  value={image}
+                  onChange={(e) => setImage(e.target.value)}
+                />
+                {image && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500 mb-1">Aperçu :</p>
+                    <Image
+                      src={image} 
+                      alt="Aperçu" 
+                      className="max-h-40 rounded-md object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div className="flex justify-end gap-2 pt-4">
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => setIsOpen(false)}
+                  disabled={isLoading}
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isLoading}
+                >
+                  {isLoading ? 'Traitement...' : selectedProject ? 'Mettre à jour' : 'Ajouter'}
+                </Button>
+              </div>
             </form>
           </DialogContent>
         </Dialog>
       </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nom</TableHead>
-            <TableHead>Description</TableHead>
-            <TableHead>Technologies</TableHead>
-            <TableHead>Lien</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {projects.map((project) => (
-            <TableRow key={project.id}>
-              <TableCell>{project.Nom}</TableCell>
-              <TableCell>
-                {project.Description.length > 50
-                  ? `${project.Description.slice(0, 50)}...`
-                  : project.Description}
-              </TableCell> 
-              <TableCell>
-                {project.Technologies && project.Technologies.length > 0
-                  ? project.Technologies.join(', ')
-                  : 'Aucune technologie'}
-              </TableCell>
-              <TableCell>
-                <a href={project.Lien} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
-                  Voir
-                </a>
-              </TableCell>
-              <TableCell className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => handleEdit(project)}>
-                  Éditer
-                </Button>
-                <Button variant="destructive" size="sm" onClick={() => handleDelete(project.id)}>
-                  Supprimer
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      {isLoading && !projects.length ? (
+        <div className="text-center py-8">
+          <p>Chargement des projets...</p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nom</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Technologies</TableHead>
+                <TableHead>Lien</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {projects.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center py-6">
+                    Aucun projet trouvé
+                  </TableCell>
+                </TableRow>
+              ) : (
+                projects.map((project) => (
+                  <TableRow key={project.id}>
+                    <TableCell className="font-medium">{project.Nom}</TableCell>
+                    <TableCell>
+                      {project.Description && project.Description.length > 50
+                        ? `${project.Description.slice(0, 50)}...`
+                        : project.Description || 'Aucune description'}
+                    </TableCell> 
+                    <TableCell>
+                      {project.Technologies && project.Technologies.length > 0
+                        ? project.Technologies.join(', ')
+                        : 'Aucune technologie'}
+                    </TableCell>
+                    <TableCell>
+                      {project.Lien ? (
+                        <Link 
+                          href={project.Lien}
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="text-blue-600 hover:text-blue-800 underline"
+                        >
+                          Voir
+                        </Link>
+                      ) : (
+                        <span className="text-gray-500">Aucun lien</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleEdit(project)}>
+                          Éditer
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   );
 }
