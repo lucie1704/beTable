@@ -30,7 +30,7 @@ export interface Project {
   }[];
   Étudiants: string[];
   Catégories: string[];
-  Publié: boolean;
+  isVisible: boolean;
   Likes: number;
   Commentaire: string[];
 };

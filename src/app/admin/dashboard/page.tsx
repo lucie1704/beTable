@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Project } from '@/types/project';
 import Image from 'next/image';
+import VisibilityToggle from '@/components/VisibilityToggle';
 
 export default function AdminDashboardPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -29,7 +30,7 @@ export default function AdminDashboardPage() {
   const fetchProjects = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get('/api/projects');
+      const response = await axios.get('/api/projects', { params: { showAll: true } });
       setProjects(response.data);
     } catch (error) {
       console.error('Error fetching projects:', error);
@@ -88,6 +89,14 @@ export default function AdminDashboardPage() {
   const openAddProjectDialog = () => {
     resetForm();
     setIsOpen(true);
+  };
+
+  const handleVisibilityToggle = (projectId: string, isVisible: boolean) => {
+    setProjects(projects.map(project => 
+      project.id === projectId 
+        ? { ...project, isVisible: isVisible } 
+        : project
+    ));
   };
 
   return (
@@ -206,6 +215,7 @@ export default function AdminDashboardPage() {
                 <TableHead>Description</TableHead>
                 <TableHead>Technologies</TableHead>
                 <TableHead>Lien</TableHead>
+                <TableHead>Visibilité</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -218,7 +228,7 @@ export default function AdminDashboardPage() {
                 </TableRow>
               ) : (
                 projects.map((project) => (
-                  <TableRow key={project.id}>
+                  <TableRow key={project.id} className={!project.isVisible ? 'opacity-60' : ''}>
                     <TableCell className="font-medium">{project.Nom}</TableCell>
                     <TableCell>
                       {project.Description && project.Description.length > 50
@@ -243,6 +253,13 @@ export default function AdminDashboardPage() {
                       ) : (
                         <span className="text-gray-500">Aucun lien</span>
                       )}
+                    </TableCell>
+                    <TableCell>
+                      <VisibilityToggle 
+                        projectId={project.id}
+                        initialVisibility={project.isVisible === true}
+                        onToggle={(isVisible) => handleVisibilityToggle(project.id, isVisible)}
+                      />
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
