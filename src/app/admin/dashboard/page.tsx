@@ -166,19 +166,6 @@ export default function AdminDashboardPage() {
                   value={image}
                   onChange={(e) => setImage(e.target.value)}
                 />
-                {image && (
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500 mb-1">Aperçu :</p>
-                    <Image
-                      src={image} 
-                      alt="Aperçu" 
-                      className="max-h-40 rounded-md object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-                      }}
-                    />
-                  </div>
-                )}
               </div>
               
               <div className="flex justify-end gap-2 pt-4">
