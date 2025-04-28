@@ -9,7 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Project } from '@/types/project';
-import Image from 'next/image';
 import VisibilityToggle from '@/components/VisibilityToggle';
 
 export default function AdminDashboardPage() {
