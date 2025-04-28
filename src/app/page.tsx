@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Project } from '@/types/project';
 import LikeButton from '@/components/LikeButton';
-import LogoutButton from '@/components/LogoutButton';
+import CustomNavbar from '@/components/NavBar';
 
 export default function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -44,6 +44,8 @@ export default function Home() {
   }, [debouncedSearchTerm]);
 
   return (
+    <>
+    <CustomNavbar />
     <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
       <h1>Portfolio étudiant JPO</h1>
       <input
@@ -114,7 +116,7 @@ export default function Home() {
           ))
         )}
       </div>
-      <LogoutButton />
     </main>
+    </>
   );
 }

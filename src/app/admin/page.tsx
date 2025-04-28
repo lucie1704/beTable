@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
-import LogoutButton from '@/components/LogoutButton';
 
 const AdminPage = () => {
   const [name, setName] = useState('');
@@ -47,7 +46,6 @@ const AdminPage = () => {
   return (
     <div>
       <h1>Admin Page</h1>
-      <LogoutButton />
       <h2>Add New Project</h2>
       <form onSubmit={handleSubmit}>
         <div>

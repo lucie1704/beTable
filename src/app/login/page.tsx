@@ -3,6 +3,11 @@
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Signin() {
   const [email, setEmail] = useState('');
@@ -27,51 +32,51 @@ export default function Signin() {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-sm p-6 bg-white text-gray-900 shadow-md rounded-lg">
-        <h1 className="text-center text-2xl font-semibold mb-6">
-          Se connecter
-        </h1>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <Card className="w-full max-w-sm shadow-md">
+        <CardHeader>
+          <CardTitle className="text-2xl text-center">Se connecter</CardTitle>
+        </CardHeader>
 
-        {error && <div className="text-red-500 text-sm text-center mb-4">{error}</div>}
+        <CardContent>
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertTitle>Erreur</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
-        <form onSubmit={handleCredentialsSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+          <form onSubmit={handleCredentialsSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="exemple@domaine.com"
+                required
+              />
+            </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium">
-              Mot de passe
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md"
-              required
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="w-full mt-4 py-2 px-4 bg-teal-600 text-white rounded-md hover:bg-teal-700"
-          >
-            Se connecter
-          </button>
-        </form>
-      </div>
+            <Button type="submit" className="w-full">
+              Se connecter
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }
