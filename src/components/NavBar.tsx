@@ -3,8 +3,12 @@
 import { Menubar } from "@/components/ui/menubar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useSession, signOut, SessionProvider } from "next-auth/react";
 
-export default function CustomNavbar() {
+// Composant interne qui utilise useSession
+function NavbarContent() {
+  const { data: session } = useSession();
+  
   return (
     <Menubar className="flex justify-between p-6 shadow-md">
       <div className="flex items-center">
@@ -14,12 +18,29 @@ export default function CustomNavbar() {
       </div>
 
       <div className="flex items-center gap-4">
-        <Button asChild variant="outline">
-          <Link href="/login">
-            Se connecter
-          </Link>
-        </Button>
+        {session ? (
+          <>
+            <span className="text-gray-700">Bienvenue, {session.user?.name}</span>
+            <Button variant="outline" onClick={() => signOut()}>
+              Se déconnecter
+            </Button>
+          </>
+        ) : (
+          <Button asChild variant="outline">
+            <Link href="/login">
+              Se connecter
+            </Link>
+          </Button>
+        )}
       </div>
     </Menubar>
+  );
+}
+
+export default function CustomNavbar() {
+  return (
+    <SessionProvider>
+      <NavbarContent />
+    </SessionProvider>
   );
 }

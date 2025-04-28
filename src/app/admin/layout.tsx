@@ -21,20 +21,15 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <aside className="w-64 bg-white shadow-md p-4">
         <h2 className="text-2xl font-bold mb-6">Admin Panel</h2>
         <NavigationMenu>
-          <NavigationMenuList className="flex flex-col gap-2">
+          <NavigationMenuList className="flex flex-col items-start w-full">
             <NavigationMenuItem>
               <a href="/admin/dashboard" className="text-gray-700 hover:text-black">
-                Dashboard
+                Tableau de bord
               </a>
             </NavigationMenuItem>
             <NavigationMenuItem>
               <a href="/admin/users" className="text-gray-700 hover:text-black">
-                Users
-              </a>
-            </NavigationMenuItem>
-            <NavigationMenuItem>
-              <a href="/admin/settings" className="text-gray-700 hover:text-black">
-                Settings
+                Utilisateurs
               </a>
             </NavigationMenuItem>
           </NavigationMenuList>
